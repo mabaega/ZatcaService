@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ZatcaService/Services/IRelayServices.cs
+/ZatcaService/Services/IZatcaService.cs
+/ZatcaService/Services/RelayService.cs
+/ZatcaService/Services/ZatcaService.cs
+/ZatcaService/Template.txt
+/ZatcaService/ZatcaInvoice.db

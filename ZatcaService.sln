@@ -7,6 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZatcaService", "ZatcaServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zatca.eInvoice", "Zatca.eInvoice\Zatca.eInvoice.csproj", "{422F7004-9D90-48E7-B385-25871932AB50}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ManagerIoFiles", "ManagerIoFiles", "{529A531A-7555-44C7-8A87-D50156254D9E}"
+	ProjectSection(SolutionItems) = preProject
+		ManagerIoFiles\Zatca eInvoice.manager = ManagerIoFiles\Zatca eInvoice.manager
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

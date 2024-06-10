@@ -1,0 +1,248 @@
+﻿@model ZatcaService.Models.GatewaySetting
+
+<h1>Zatca Gateway Settings</h1>
+<hr />
+
+<div class="container">
+    <form id="editForm" asp-action="Edit" method="post">
+        <div class="row">
+            <!-- BusinessInfo Card -->
+            <div class="col-md-8">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h4>Business Information</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="RowId" />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ID" class="form-label"></label>
+                                <input asp-for="ID" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="SchemeID" class="form-label"></label>
+                                <input asp-for="SchemeID" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="StreetName" class="form-label"></label>
+                                <input asp-for="StreetName" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BuildingNumber" class="form-label"></label>
+                                <input asp-for="BuildingNumber" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CitySubdivisionName" class="form-label"></label>
+                            <input asp-for="CitySubdivisionName" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="CityName" class="form-label"></label>
+                            <input asp-for="CityName" class="form-control" readonly />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PostalZone" class="form-label"></label>
+                                <input asp-for="PostalZone" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CountryIdentificationCode" class="form-label"></label>
+                                <input asp-for="CountryIdentificationCode" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CompanyID" class="form-label"></label>
+                                <input asp-for="CompanyID" class="form-control" readonly />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="TaxSchemeID" class="form-label"></label>
+                                <input asp-for="TaxSchemeID" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="mb-3">
+                            <label asp-for="RegistrationName" class="form-label"></label>
+                            <input asp-for="RegistrationName" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BusinessDataCustomField Card -->
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        <h4>Business Data Custom Fields</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label asp-for="AccessToken" class="form-label"></label>
+                            <input asp-for="AccessToken" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="BusinessNameGuid" class="form-label"></label>
+                            <input asp-for="BusinessNameGuid" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="BaseCurrencyGuid" class="form-label"></label>
+                            <input asp-for="BaseCurrencyGuid" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="InvoiceSubTypeGuid" class="form-label"></label>
+                            <input asp-for="InvoiceSubTypeGuid" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="ItemTaxCategoryGuid" class="form-label"></label>
+                            <input asp-for="ItemTaxCategoryGuid" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="PaymentMeansCodeGuid" class="form-label"></label>
+                            <input asp-for="PaymentMeansCodeGuid" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="InstructionNoteGuid" class="form-label"></label>
+                            <input asp-for="InstructionNoteGuid" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="PartyTaxInfoGuid" class="form-label"></label>
+                            <input asp-for="PartyTaxInfoGuid" class="form-control" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="QrCodeGuid" class="form-label"></label>
+                            <input asp-for="QrCodeGuid" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GatewaySetting Card -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>Zatca Api Endpoint Setting</h4>
+            </div>
+            <div class="card-body">
+
+                <div class="mb-3">
+                    <label asp-for="EcSecp256k1Privkeypem" class="form-label"></label>
+                    <textarea asp-for="EcSecp256k1Privkeypem" class="form-control" readonly style="min-height: 80px;"></textarea>
+                </div>
+                <hr />
+                <div class="mb-3">
+                    <label asp-for="CCSIDComplianceRequestId" class="form-label"></label>
+                    <input asp-for="CCSIDComplianceRequestId" class="form-control" readonly />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="CCSIDBinaryToken" class="form-label"></label>
+                    <textarea asp-for="CCSIDBinaryToken" class="form-control" readonly style="min-height: 235px;"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="CCSIDSecret" class="form-label"></label>
+                    <input asp-for="CCSIDSecret" class="form-control" readonly />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ComplianceCheckUrl" class="form-label"></label>
+                    <input asp-for="ComplianceCheckUrl" class="form-control" readonly />
+                </div>
+                <hr />
+                <div class="mb-3">
+                    <label asp-for="PCSIDBinaryToken" class="form-label"></label>
+                    <textarea asp-for="PCSIDBinaryToken" class="form-control" readonly style="min-height: 355px;"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PCSIDSecret" class="form-label"></label>
+                    <input asp-for="PCSIDSecret" class="form-control" readonly />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ReportingUrl" class="form-label"></label>
+                    <input asp-for="ReportingUrl" class="form-control" readonly />
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ClearanceUrl" class="form-label"></label>
+                    <input asp-for="ClearanceUrl" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="mt-3">
+        <button id="editButton" class="btn btn-warning float-end">Edit Settings</button>
+        <button id="saveButton" class="btn btn-primary float-end" style="display: none;">Save Settings</button>
+        <button id="resetButton" class="btn btn-secondary">Reset to Default</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('editButton').addEventListener('click', function () {
+            // Enable all form fields
+            document.querySelectorAll('#editForm input, #editForm textarea').forEach(function (element) {
+                element.removeAttribute('readonly');
+            });
+
+            // Show Save button and hide Edit button
+            document.getElementById('saveButton').style.display = 'inline-block';
+            document.getElementById('editButton').style.display = 'none';
+            document.getElementById('resetButton').style.visibility = 'hidden';
+        });
+
+        document.getElementById('saveButton').addEventListener('click', function () {
+            // Submit the form
+            document.getElementById('editForm').submit();
+
+            // Disable all form fields
+            document.querySelectorAll('#editForm input, #editForm textarea').forEach(function (element) {
+                element.setAttribute('readonly', 'readonly');
+            });
+
+            // Hide Save button and show Edit button
+            document.getElementById('saveButton').style.display = 'none';
+            document.getElementById('editButton').style.display = 'inline-block';
+            document.getElementById('resetButton').style.visibility = 'visible';
+
+            // Optionally, show success message using a messagebox
+            alert('Data saved successfully.');
+        });
+
+
+        document.getElementById('resetButton').addEventListener('click', function () {
+            if (confirm('Are you sure you want to reset settings to default?')) {
+                fetch('/GatewaySettings/ResetToDefault', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add any additional headers if needed
+                    },
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Redirect to the Index page upon successful reset
+                            window.location.href = '/GatewaySettings/Index';
+                            alert('Setting reset to Default successfully.');
+                        } else {
+                            // Handle error response
+                            alert('Failed to reset settings:', response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error resetting settings:', error);
+                    });
+            }
+        });
+
+    </script>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+

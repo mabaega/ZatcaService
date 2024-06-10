@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace ZatcaService.Models
 {
@@ -8,7 +7,13 @@ namespace ZatcaService.Models
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
+        public DbSet<GatewaySetting> GatewaySettings { get; set; }
+        public DbSet<ApprovedInvoice> ApprovedInvoices { get; set; }
 
-        public DbSet<SignedInvoice> SignedInvoices { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
+
     }
 }

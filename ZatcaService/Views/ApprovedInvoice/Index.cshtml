@@ -1,0 +1,113 @@
+﻿@model IEnumerable<ApprovedInvoice>
+
+@{
+    ViewData["Title"] = "Approved Invoices";
+}
+
+<div class="row" style="vertical-align: bottom;">
+    <div class="col-md-8">
+        <h1 id="pageTitle" style="display: inline-block;">Approved Invoices</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <button id="exportBtn" class="btn btn-primary" style="vertical-align: bottom;">Export to CSV</button>
+    </div>
+</div>
+
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="dataTable" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Invoice ID</th>
+                                    <th>Invoice Type</th>
+                                    <th>Invoice SubType</th>
+                                    <th>Issue Date</th>
+                                    <th>Reference</th>
+                                    <th>Party Name</th>
+                                    <th>ICV</th>
+                                    <th>Request Type</th>
+                                    <th>Clearance Status</th>
+                                    <th>Reporting Status</th>
+                                    <th>Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var invoice in Model)
+                                {
+                                    <tr>
+                                        <td>@invoice.InvoiceUUID</td>
+                                        <td>@invoice.InvoiceType</td>
+                                        <td>@invoice.InvoiceSubType</td>
+                                        <td>@invoice.IssueDate</td>
+                                        <td>@invoice.Reference</td>
+                                        <td>@invoice.PartyName</td>
+                                        <td>@invoice.ICV</td>
+                                        <td>@invoice.RequestType</td>
+                                        <td>@invoice.ClearanceStatus</td>
+                                        <td>@invoice.ReportingStatus</td>
+                                        <td>@invoice.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable();
+        });
+    </script>
+
+    <script>
+        document.getElementById('exportBtn').addEventListener('click', function () {
+            var header = [];
+            document.querySelectorAll('#dataTable thead th').forEach(function (th) {
+                header.push(th.innerText);
+            });
+
+            var tableData = [];
+            var rows = document.querySelectorAll('#dataTable tbody tr');
+            rows.forEach(function (row) {
+                var rowData = [];
+                row.querySelectorAll('td').forEach(function (cell) {
+                    var text = decodeURIComponent(cell.innerText);
+                    if (text.includes(',')) {
+                        text = '"' + text + '"';
+                    }
+                    rowData.push(text);
+                });
+                tableData.push(rowData);
+            });
+
+            var data = [header].concat(tableData);
+
+            var csvContent = data.map(function (row) {
+                return row.join(',');
+            }).join('\n');
+
+            var encodedUri = encodeURI('data:text/plain;charset=utf-8,' + csvContent);
+            var link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "ApprovedInvoices.txt");
+            document.body.appendChild(link);
+            link.click();
+        });
+    </script>
+
+
+
+
+
+}

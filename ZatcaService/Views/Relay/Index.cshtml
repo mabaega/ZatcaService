@@ -1,0 +1,316 @@
+﻿@using Newtonsoft.Json
+@using System.Xml.Linq
+@using System.Text
+@using System.Web
+@using ZatcaService.Helpers
+@model ApprovedInvoice
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Form with QR Code and Download Button</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="~/js/qrcode.js"></script>
+    <style>
+        .custom-card-width {
+            min-width: 240px;
+            margin: 0 auto;
+        }
+
+        #qrCodeImage {
+            width: 180px;
+            height: 180px;
+        }
+
+        .qr-code-card {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            border: 1px solid #ced4da;
+        }
+
+        .container-md {
+            padding-top: 50px;
+        }
+
+        textarea {
+            font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-md">
+        <h2>Zatca Invoice Reporting</h2>
+        <hr />
+        <div class="row">
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="updateForm" method="POST">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="invoiceUUID" class="form-label">Invoice UUID:</label>
+                                        <input type="text" class="form-control" id="invoiceUUID" name="InvoiceUUID" value="@Model.InvoiceUUID" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="referenceNumber" class="form-label">Reference Number:</label>
+                                        <input type="text" class="form-control" id="referenceNumber" name="Reference" value="@Model.Reference" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="issueDate" class="form-label">Issue Date:</label>
+                                        <input type="text" class="form-control" id="issueDate" name="IssueDate" value="@Model.IssueDate" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="partyName" class="form-label">Party Name:</label>
+                                        <input type="text" class="form-control" id="partyName" name="PartyName" value="@Model.PartyName" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="invoiceType" class="form-label">Invoice Type:</label>
+                                        <input type="text" class="form-control" id="invoiceType" name="InvoiceType" value="@Model.InvoiceType" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="invoiceSubType" class="form-label">Invoice Sub Type:</label>
+                                        <input type="text" class="form-control" id="invoiceSubType" name="InvoiceSubType" value="@Model.InvoiceSubType" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="ICV" class="form-label">ICV:</label>
+                                <input type="text" class="form-control" id="ICV" name="ICV" value="@Model.ICV" readonly>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="referrer" class="form-label">Referrer:</label>
+                                <input type="text" class="form-control" id="referrer" name="Referrer" value="@Model.Referrer" readonly>
+                            </div>
+
+                            <!-- Include hidden inputs for all other required fields -->
+                            <input type="hidden" name="PIH" value="@Model.PIH" />
+                            <input type="hidden" name="RequestType" value="@Model.RequestType" />
+                            <input type="hidden" name="ClearanceStatus" value="@Model.ClearanceStatus" />
+                            <input type="hidden" name="ReportingStatus" value="@Model.ReportingStatus" />
+                            <input type="hidden" name="XmlFileName" value="@Model.XmlFileName" />
+                            <input type="hidden" name="Base64QrCode" value="@Model.Base64QrCode" />
+                            <input type="hidden" name="Base64Invoice" value="@Model.Base64Invoice" />
+                            <input type="hidden" name="Base64SignedInvoice" value="@Model.Base64SignedInvoice" />
+                            <input type="hidden" name="Timestamp" value="@Model.Timestamp" />
+                            <input type="hidden" name="EditData" value="@Model.EditData" />
+
+                            <hr />
+
+                            <!-- Tab Navigation -->
+                            <ul class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link" id="nav-manager-tab" data-bs-toggle="tab" href="#nav-manager" role="tab" aria-controls="nav-manager" aria-selected="true">Manager Invoice</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="nav-ubl-tab" data-bs-toggle="tab" href="#nav-ubl" role="tab" aria-controls="nav-ubl" aria-selected="false">UBL Invoice</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="nav-response-tab" data-bs-toggle="tab" href="#nav-response" role="tab" aria-controls="nav-response" aria-selected="false">Server Response</a>
+                                </li>
+                            </ul>
+                            <!-- End Tab Navigation -->
+                            <!-- Tab Content -->
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade" id="nav-manager" role="tabpanel" aria-labelledby="nav-manager-tab">
+                                    <div class="mb-3">
+                                        <textarea class="form-control" id="textareaManager" name="Base64Invoice" rows="10" readonly wrap="off" style="margin-top: 10px; min-height: 200px;">
+                                            @{
+                                                if (Model.Base64Invoice != null)
+                                                {
+                                                    var managerInvoice = Encoding.UTF8.GetString(Convert.FromBase64String(Model.Base64Invoice));
+                                                    var formattedJson = JsonConvert.SerializeObject(JsonConvert.DeserializeObject(managerInvoice), Formatting.Indented);
+                                                    @Html.Raw(formattedJson)
+                                                    ;
+                                                }
+                                                else
+                                                {
+                                                    <text>No data available</text>
+                                                    ;
+                                                }
+                                            }
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-ubl" role="tabpanel" aria-labelledby="nav-ubl-tab">
+                                    <div class="mb-3">
+                                        <textarea class="form-control" id="textareaUbl" name="Base64SignedInvoice" rows="10" readonly wrap="off" style="margin-top: 10px; min-height: 200px;">
+                                            @{
+                                                if (Model.Base64SignedInvoice != null)
+                                                {
+                                                    var ublInvoice = Encoding.UTF8.GetString(Convert.FromBase64String(Model.Base64SignedInvoice));
+                                                    var formattedXml = DocumentFormatter.Beautify(XDocument.Parse(ublInvoice));
+                                                    @Html.Raw(formattedXml)
+                                                    ;
+                                                }
+                                                else
+                                                {
+                                                    <text>No data available</text>
+                                                    ;
+                                                }
+                                            }
+                                        </textarea>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade show active" id="nav-response" role="tabpanel" aria-labelledby="nav-response-tab">
+                                    <div class="mb-3">
+                                        <textarea class="form-control" id="textareaResponse" name="PortalResult" rows="10" readonly wrap="off" style="margin-top: 10px; min-height: 200px;">
+                                            @{
+                                                if (Model.ServerResult != null)
+                                                {
+                                                    var deserializedJson = JsonConvert.DeserializeObject(Model.ServerResult);
+                                                    var formattedJson = JsonConvert.SerializeObject(deserializedJson, Formatting.Indented);
+                                                    @Html.Raw(formattedJson)
+                                                    ;
+                                                }
+                                                else
+                                                {
+                                                    <text>Test UBL Invoice with Compliace Check before Clearance or Reporting</text>
+                                                    ;
+                                                }
+                                            }
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Tab Content -->
+
+                            <hr />
+
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <button type="button" class="btn btn-secondary" onclick="window.location.href='@Model.Referrer'">Back to Manager</button>
+                                    @if (Model.ClearanceStatus != "CLEARED" && Model.ReportingStatus != "REPORTED")
+                                    {
+                                        <button type="submit" formaction="@Url.Action("ComplianceCheck")" class="btn btn-warning">Compliance Check</button>
+                                    }
+
+                                </div>
+                                <div>
+                                    @if (Model.ClearanceStatus == "CLEARED" && Model.RequestType == "Invoice Compliant Check")
+                                    {
+                                        <button type="submit" formaction="@Url.Action("Reporting")" class="btn btn-primary">Invoice Reporting</button>
+                                        <button type="submit" formaction="@Url.Action("Clearance")" class="btn btn-primary">Invoice Clearance</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" formaction="@Url.Action("UpdateInvoice")" class="btn btn-success">Update Invoice</button>
+                                    }
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card custom-card-width">
+                    <div class="card-body text-center">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="qr-code-card">
+                                <div id="qrCodeImage"></div>
+                            </div>
+                        </div>
+                        <a id="downloadLink" href="data:application/octet-stream;base64,@Model.Base64SignedInvoice" class="btn btn-success mt-3" download="@Model.XmlFileName">Download Signed Invoice</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   @*  =================================================== Stuck here === *@
+    <div class="container-md">
+        <h2>Test JSON Submit Form</h2>
+        <form method="POST" action="@Model.Referrer">
+            <input type="hidden" name="Edit" value='@Html.Raw(Model.EditData)' />
+            <button type="submit" class="btn btn-success">Submit JSON</button>
+        </form>
+    </div>
+    @*  =================================================== Stuck here === *@
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script>
+        function formatTextareaJson(textareaId) {
+            var textarea = document.getElementById(textareaId);
+            var jsonString = textarea.value.trim();
+            try {
+                var jsonObject = JSON.parse(jsonString);
+                var formattedJson = JSON.stringify(jsonObject, null, 4);
+                textarea.value = formattedJson;
+            } catch (e) {
+                console.error("Error formatting JSON in textarea:", e);
+            }
+        }
+
+        function generateQRCode(text) {
+            new QRCode(document.getElementById("qrCodeImage"), {
+                text: text,
+                width: 180,
+                height: 180,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.L
+            });
+        }
+
+        function decodeBase64(base64String) {
+            const binaryString = atob(base64String);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return new TextDecoder().decode(bytes);
+        }
+
+        function base64ToBlob(base64String, contentType) {
+            var byteCharacters = decodeBase64(base64String);
+            var byteNumbers = new Array(byteCharacters.length);
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            var byteArray = new Uint8Array(byteNumbers);
+            return new Blob([byteArray], { type: contentType });
+        }
+
+        function generateDownloadLink(base64String, fileName) {
+            var blob = base64ToBlob(base64String, 'application/octet-stream');
+            var url = window.URL.createObjectURL(blob);
+            var downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = url;
+            downloadLink.download = fileName;
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            formatTextareaJson('textareaManager');
+            formatTextareaJson('textareaResponse');
+            generateQRCode("@Model.Base64QrCode");
+            generateDownloadLink("@Model.Base64SignedInvoice", "@Model.XmlFileName");
+        });
+    </script>
+
+</body>
+</html>

@@ -367,3 +367,5 @@ FodyWeavers.xsd
 /ZatcaService/Services/ZatcaService.cs
 /ZatcaService/Template.txt
 /ZatcaService/ZatcaInvoice.db
+/ZatcaService/ZatcaInvoice.db-shm
+/ZatcaService/ZatcaInvoice.db-wal

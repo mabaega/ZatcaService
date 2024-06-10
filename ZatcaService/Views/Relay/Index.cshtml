@@ -43,6 +43,11 @@
         textarea {
             font-family: Consolas, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
         }
+
+        .right-align {
+            text-align: right !important;
+        }
+
     </style>
 </head>
 <body>
@@ -96,17 +101,37 @@
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="ICV" class="form-label">ICV:</label>
-                                <input type="text" class="form-control" id="ICV" name="ICV" value="@Model.ICV" readonly>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="currencyCode" class="form-label">Currency Code:</label>
+                                        <input type="text" class="form-control" id="currencyCode" name="CurrencyCode" value="@Model.CurrencyCode" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="amount" class="form-label">Amount:</label>
+                                        @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control right-align", @readonly = "readonly" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="taxAmount" class="form-label">Tax Amount:</label>
+                                        @Html.EditorFor(model => model.TaxAmount, new { htmlAttributes = new { @class = "form-control right-align", @readonly = "readonly" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="totalAmount" class="form-label">Total Amount:</label>
+                                        @Html.EditorFor(model => model.TotalAmount, new { htmlAttributes = new { @class = "form-control right-align", @readonly = "readonly" } })
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label for="referrer" class="form-label">Referrer:</label>
-                                <input type="text" class="form-control" id="referrer" name="Referrer" value="@Model.Referrer" readonly>
-                            </div>
-
+                            <hr />
                             <!-- Include hidden inputs for all other required fields -->
+                            <input type="hidden" name="Referrer" value="@Model.Referrer"
+                            <input type="hidden" name="ICV" value="@Model.ICV" />
                             <input type="hidden" name="PIH" value="@Model.PIH" />
                             <input type="hidden" name="RequestType" value="@Model.RequestType" />
                             <input type="hidden" name="ClearanceStatus" value="@Model.ClearanceStatus" />
@@ -115,6 +140,7 @@
                             <input type="hidden" name="Base64QrCode" value="@Model.Base64QrCode" />
                             <input type="hidden" name="Base64Invoice" value="@Model.Base64Invoice" />
                             <input type="hidden" name="Base64SignedInvoice" value="@Model.Base64SignedInvoice" />
+                            <input type="hidden" name="InvoiceHash" value="@Model.InvoiceHash" />
                             <input type="hidden" name="Timestamp" value="@Model.Timestamp" />
                             <input type="hidden" name="EditData" value="@Model.EditData" />
 
@@ -241,7 +267,7 @@
         </div>
     </div>
 
-   @*  =================================================== Stuck here === *@
+    @*  =================================================== Stuck here === *@
     <div class="container-md">
         <h2>Test JSON Submit Form</h2>
         <form method="POST" action="@Model.Referrer">
@@ -304,11 +330,24 @@
             downloadLink.download = fileName;
         }
 
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: model.CurrencyCode
+            }).format(amount);
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             formatTextareaJson('textareaManager');
             formatTextareaJson('textareaResponse');
             generateQRCode("@Model.Base64QrCode");
             generateDownloadLink("@Model.Base64SignedInvoice", "@Model.XmlFileName");
+
+            document.getElementById('currencyCode').value = model.CurrencyCode;
+            document.getElementById('amount').value = formatCurrency(model.Amount);
+            document.getElementById('taxAmount').value = formatCurrency(model.TaxAmount);
+            document.getElementById('totalAmount').value = formatCurrency(model.TotalAmount);
+    
         });
     </script>
 

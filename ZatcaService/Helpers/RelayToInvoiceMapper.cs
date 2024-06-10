@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using System.Text;
-using Zatca.eInvoice;
+﻿using Newtonsoft.Json;
 using Zatca.eInvoice.Helpers;
 using Zatca.eInvoice.Models;
 using ZatcaService.Models;

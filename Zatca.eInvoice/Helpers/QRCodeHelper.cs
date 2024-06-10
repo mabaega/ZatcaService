@@ -48,8 +48,8 @@ namespace Zatca.eInvoice.Helpers
             { 1, Encoding.UTF8.GetBytes(invoiceObject.AccountingSupplierParty.Party.PartyLegalEntity.RegistrationName)},
             { 2, Encoding.UTF8.GetBytes(invoiceObject.AccountingSupplierParty.Party.PartyTaxScheme.CompanyID)},
             { 3, Encoding.UTF8.GetBytes($"{invoiceObject.IssueDate}T{invoiceObject.IssueTime}")},
-            { 4, Encoding.UTF8.GetBytes(invoiceObject.LegalMonetaryTotal.PayableAmount.Value)},
-            { 5, Encoding.UTF8.GetBytes(invoiceObject.TaxTotal[0].TaxAmount.Value)},
+            { 4, Encoding.UTF8.GetBytes(invoiceObject.LegalMonetaryTotal.PayableAmount.Value.ToString())},
+            { 5, Encoding.UTF8.GetBytes(invoiceObject.TaxTotal[0].TaxAmount.Value.ToString())},
             { 6, Encoding.UTF8.GetBytes(signedUBL.InvoiceHash) },
             { 7, Encoding.UTF8.GetBytes(signedUBL.SignatureValue)}
         };

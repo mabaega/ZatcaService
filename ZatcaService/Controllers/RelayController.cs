@@ -73,6 +73,10 @@ namespace ZatcaService.Controllers
                     ManagerInvoice managerInvoice = JsonConvert.DeserializeObject<ManagerInvoice>(managerInvoicejson);
 
                     var editData = InvoiceHelper.ModifyQrInEditData(relayData.Edit, _gatewaySetting.QrCodeGuid, base64QrCode);
+                    
+                    var amount = invoice.LegalMonetaryTotal.TaxExclusiveAmount.NumericValue;
+                    var totalAmount = invoice.LegalMonetaryTotal.TaxInclusiveAmount.NumericValue;
+                    var taxAmount = totalAmount - amount;
 
                     approvedInvoice = new ApprovedInvoice
                     {
@@ -82,6 +86,10 @@ namespace ZatcaService.Controllers
                         Reference = managerInvoice?.Reference,
                         IssueDate = managerInvoice?.IssueDate.ToString("yyyy-MM-dd"),
                         PartyName = managerInvoice?.InvoiceParty?.Name,
+                        CurrencyCode = managerInvoice?.InvoiceParty?.Currency?.Code ?? "SAR",
+                        Amount = amount,
+                        TaxAmount = taxAmount,
+                        TotalAmount = totalAmount,
                         Base64Invoice = Convert.ToBase64String(Encoding.UTF8.GetBytes(managerInvoicejson)),
                         Referrer = relayData.Referrer,
                         ICV = ICV,

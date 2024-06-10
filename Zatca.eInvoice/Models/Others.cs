@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Globalization;
+using System.Text.Json.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -42,21 +43,14 @@ namespace Zatca.eInvoice.Models
         [JsonIgnore]
         public decimal NumericValue
         {
-            get => decimal.TryParse(Value, out decimal result) ? result : 0;
-            set => Value = value.ToString();
+            get => decimal.TryParse(Value, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal result) ? result : 0;
+            set => Value = value.ToString(CultureInfo.InvariantCulture);
         }
 
         public Amount(string currencyID, double value)
         {
             CurrencyID = currencyID;
-            Value = string.Format("{0:F2}", value);
-        }
-
-        public override string ToString()
-        {
-            decimal numericValue = NumericValue;
-            string formattedCurrency = string.Format("{0:C}", numericValue);
-            return formattedCurrency;
+            Value = value.ToString("G17", CultureInfo.InvariantCulture); // G17 memastikan bahwa semua digit desimal disimpan
         }
 
         public Amount() { }

@@ -10,17 +10,16 @@ using ZatcaService.Services;
 using System.Net.Http.Headers;
 using System.Xml.Serialization;
 
-
 namespace ZatcaService.Controllers
 {
-    [Route("api/[controller]")]
+    //[Route("api/[controller]")]
     [ApiController]
-    public class RelayController : Controller // Mengubah dari ControllerBase menjadi Controller
+    public class RelayController : Controller 
     {
         private readonly AppDbContext _dbContext;
         private readonly ILogger<RelayController> _logger;
         private readonly GatewaySetting _gatewaySetting;
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient = new ();
         public RelayController(AppDbContext dbContext, IGatewaySettingService gatewaySettingService, ILogger<RelayController> logger)
         {
             _dbContext = dbContext;
@@ -50,7 +49,8 @@ namespace ZatcaService.Controllers
 
                 if (approvedInvoice != null)
                 {
-                    approvedInvoice.RequestType = approvedInvoice.RequestType + " --- FROM INVOICE LOG ---";
+                    approvedInvoice.RequestType += " --- FROM INVOICE LOG ---";
+                    approvedInvoice.Referrer = relayData.Referrer; // Forgot this...
                     return View("Index", approvedInvoice);
                 }
                 else
@@ -168,7 +168,7 @@ namespace ZatcaService.Controllers
                 if (approvedInvoice != null)
                 {
                     var serverResult = JsonConvert.DeserializeObject<ServerResult>(approvedInvoice.ServerResult);
-                    serverResult.RequestType = serverResult.RequestType + " --- FROM INVOICE LOG ---";
+                    serverResult.RequestType += " --- FROM INVOICE LOG ---";
                     approvedInvoice.ServerResult = JsonConvert.SerializeObject(serverResult);
 
                     return View("Index", approvedInvoice);
@@ -203,19 +203,16 @@ namespace ZatcaService.Controllers
                     model.Base64SignedInvoice = apiResponse.ClearedInvoice;
 
                     XmlSerializer serializer = new(typeof(Invoice));
-                    using (StringReader reader = new(clearedInvoiceXml))
+                    using StringReader reader = new(clearedInvoiceXml);
+                    var clearedInvoice = (Invoice)serializer.Deserialize(reader);
+
+                    var qrCodeNode = clearedInvoice?.AdditionalDocumentReference?
+                        .FirstOrDefault(docRef => docRef.ID.Value == "QR")?.Attachment?.EmbeddedDocumentBinaryObject;
+
+                    if (qrCodeNode != null)
                     {
-                        var clearedInvoice = (Invoice)serializer.Deserialize(reader);
-
-                        var qrCodeNode = clearedInvoice?.AdditionalDocumentReference?
-                            .FirstOrDefault(docRef => docRef.ID.Value == "QR")?.Attachment?.EmbeddedDocumentBinaryObject;
-
-                        if (qrCodeNode != null)
-                        {
-                            model.Base64QrCode = qrCodeNode.Value;
-                            model.EditData = InvoiceHelper.ModifyQrInEditData(model.EditData, _gatewaySetting.QrCodeGuid, qrCodeNode.Value);
-                        }
-
+                        model.Base64QrCode = qrCodeNode.Value;
+                        model.EditData = InvoiceHelper.ModifyQrInEditData(model.EditData, _gatewaySetting.QrCodeGuid, qrCodeNode.Value);
                     }
                 }
 
@@ -230,6 +227,8 @@ namespace ZatcaService.Controllers
                 if (model.ClearanceStatus == "CLEARED")
                 {
                     //model.Timestamp = apiResponse.Timestamp;
+                    model.Timestamp = DateTime.Now;
+
                     _dbContext.ApprovedInvoices.Add(model);
                     await _dbContext.SaveChangesAsync();
                 }
@@ -256,7 +255,7 @@ namespace ZatcaService.Controllers
                     if (approvedInvoice != null)
                     {
                         var serverResult = JsonConvert.DeserializeObject<ServerResult>(approvedInvoice.ServerResult);
-                        serverResult.RequestType = serverResult.RequestType + " --- FROM INVOICE LOG ---";
+                        serverResult.RequestType += " --- FROM INVOICE LOG ---";
                         approvedInvoice.ServerResult = JsonConvert.SerializeObject(serverResult);
 
                         return View("Index", approvedInvoice);
@@ -293,7 +292,8 @@ namespace ZatcaService.Controllers
 
                     if (model.ReportingStatus == "REPORTED")
                     {
-                        //model.Timestamp = apiResponse.Timestamp;
+                        model.Timestamp = DateTime.Now;
+
                         _dbContext.ApprovedInvoices.Add(model);
                         await _dbContext.SaveChangesAsync();
                     }
@@ -315,7 +315,7 @@ namespace ZatcaService.Controllers
         {
             try
             {
-                var apiUrl = ConstructApiUrl(model.Referrer, model.InvoiceUUID);
+                var apiUrl = InvoiceHelper.ConstructApiUrl(model.Referrer, model.InvoiceUUID);
 
                 using (var client = new HttpClient())
                 {
@@ -326,6 +326,7 @@ namespace ZatcaService.Controllers
                     var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
                     var response = await client.PutAsync(apiUrl, content);
+
                     ServerResult serverResult = new();
                     if (response.IsSuccessStatusCode)
                     {
@@ -347,31 +348,6 @@ namespace ZatcaService.Controllers
                 model.ServerResult = ex.Message;
                 return View("Index", model);
             }
-        }
-
-        private string ConstructApiUrl(string referrer, string invoiceUUID)
-        {
-            var uri = new Uri(referrer);
-            var baseUrl = $"{uri.Scheme}://{uri.Host}";
-
-            if (referrer.Contains("purchase-invoice-view"))
-            {
-                return $"{baseUrl}/api2/purchase-invoice-form/{invoiceUUID}";
-            }
-            else if (referrer.Contains("sales-invoice-view"))
-            {
-                return $"{baseUrl}/api2/sales-invoice-form/{invoiceUUID}";
-            }
-            else if (referrer.Contains("debit-note-view"))
-            {
-                return $"{baseUrl}/api2/debit-note-form/{invoiceUUID}";
-            }
-            else if (referrer.Contains("credit-note-view"))
-            {
-                return $"{baseUrl}/api2/credit-note-form/{invoiceUUID}";
-            }
-
-            throw new ArgumentException("Invalid referrer URL");
         }
 
     }

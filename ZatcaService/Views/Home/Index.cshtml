@@ -1,1 +1,25 @@
-﻿
+﻿<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Selamat datang di ZatcaService</h5>
+                    <hr />
+                    <p class="card-text">Jika Anda melihat halaman ini, berarti ZatcaService sudah berjalan dan siap memproses data Anda.</p>
+                    <p class="card-text">Pastikan untuk melakukan pengaturan pada <a href="@Url.Action("Index", "GatewaySettings")">Gateway Settings</a> sesuai dengan data yang Anda miliki</p>
+                    <p class="card-text">Pastikan semua terisi dengan benar agar aplikasi dapat berjalan dengan semestinya.</p>
+                    <p class="card-text">Tambahkan relay <code>@($"{Context.Request.Scheme}://{Context.Request.Host}/process-form")</code> pada aplikasi Manager Anda.</p>
+                    <p class="card-text">Hubungi pembuat untuk informasi lebih lanjut.</p>
+                    <p class="card-text">Terima kasih.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Message"]
+    </div>
+}

@@ -80,6 +80,31 @@ namespace ZatcaService.Helpers
 
             return updatedJsonString;
         }
+
+        public static string ConstructApiUrl(string referrer, string invoiceUUID)
+        {
+            var uri = new Uri(referrer);
+            var baseUrl = $"{uri.Scheme}://{uri.Host}";
+
+            if (referrer.Contains("purchase-invoice-view"))
+            {
+                return $"{baseUrl}/api2/purchase-invoice-form/{invoiceUUID}";
+            }
+            else if (referrer.Contains("sales-invoice-view"))
+            {
+                return $"{baseUrl}/api2/sales-invoice-form/{invoiceUUID}";
+            }
+            else if (referrer.Contains("debit-note-view"))
+            {
+                return $"{baseUrl}/api2/debit-note-form/{invoiceUUID}";
+            }
+            else if (referrer.Contains("credit-note-view"))
+            {
+                return $"{baseUrl}/api2/credit-note-form/{invoiceUUID}";
+            }
+
+            throw new ArgumentException("Invalid referrer URL");
+        }
     }
 }
 

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Http.Json;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Text.Json.Serialization;
 using ZatcaService.Helpers;
 using ZatcaService.Models;
@@ -29,8 +31,6 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
 
-//builder.Services.AddHttpClient<IRelayService, RelayService>();
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -51,6 +51,16 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+var defaultCulture = new CultureInfo("en-US");
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(defaultCulture),
+    SupportedCultures = new List<CultureInfo> { defaultCulture },
+    SupportedUICultures = new List<CultureInfo> { defaultCulture }
+};
+
+app.UseRequestLocalization(localizationOptions);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

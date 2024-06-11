@@ -72,6 +72,7 @@ namespace ZatcaService.Models
         public string QrCodeGuid { get; set; }
 
         // Zatca Connection Setting
+
         [Display(Name = "EC Secp256k1 Private Key (PEM)")]
         public string EcSecp256k1Privkeypem { get; set; }
 
@@ -81,6 +82,7 @@ namespace ZatcaService.Models
         [Display(Name = "CCSID Binary Token")]
         public string CCSIDBinaryToken { get; set; }
 
+
         [Display(Name = "CCSID Secret")]
         public string CCSIDSecret { get; set; }
 
@@ -89,6 +91,7 @@ namespace ZatcaService.Models
 
         [Display(Name = "PCSID Binary Token")]
         public string PCSIDBinaryToken { get; set; }
+
 
         [Display(Name = "PCSID Secret")]
         public string PCSIDSecret { get; set; }

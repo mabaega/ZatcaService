@@ -6,7 +6,7 @@
 
 <div class="row" style="vertical-align: bottom;">
     <div class="col-md-8">
-        <h1 id="pageTitle" style="display: inline-block;">Approved Invoices</h1>
+        <h2 id="pageTitle" style="display: inline-block;">Approved Invoices</h2>
     </div>
     <div class="col-md-4 text-end">
         <button id="exportBtn" class="btn btn-primary" style="vertical-align: bottom;">Export to CSV</button>
@@ -14,29 +14,29 @@
 </div>
 
 <hr />
-<div class="container">
+<<div class="container">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="dataTable" class="table">
+                        <table id="dataTable" class="table table-striped table-bordered" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>Invoice ID</th>
-                                    <th>Invoice Type</th>
-                                    <th>Invoice SubType</th>
-                                    <th>Issue Date</th>
-                                    <th>Reference</th>
+                                    <th>Invoice Type</th> <!-- CENTER -->
+                                    <th>Invoice SubType</th> <!-- CENTER -->
+                                    <th>Issue Date</th> <!-- CENTER -->
+                                    <th>Reference</th> <!-- CENTER -->
                                     <th>Party Name</th>
-                                    <th>Currency Code</th>
-                                    <th>Amount</th>
-                                    <th>Tax Amount</th>
-                                    <th>Total Amount</th>
+                                    <th>Currency Code</th> <!-- CENTER -->
+                                    <th>Amount</th> <!-- RIGHT, Number formatted -->
+                                    <th>Tax Amount</th> <!-- RIGHT, Number formatted -->
+                                    <th>Total Amount</th> <!-- RIGHT, Number formatted -->
                                     <th>Request Type</th>
-                                    <th>Clearance Status</th>
-                                    <th>Reporting Status</th>
-                                    <th>Timestamp</th>
+                                    <th>Clearance Status</th> <!-- CENTER -->
+                                    <th>Reporting Status</th> <!-- CENTER -->
+                                    <th>Timestamp</th> <!-- CENTER -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -72,7 +72,18 @@
 {
     <script>
         $(document).ready(function () {
-            $('#dataTable').DataTable();
+            $('#dataTable').DataTable({
+                autoWidth: true,
+                autoFill: true,
+                columnDefs: [
+                    { className: 'text-center', targets: [1, 2, 3, 4, 6, 11, 12, 13] }, // Center align
+                    { className: 'text-right', targets: [7, 8, 9] }, // Right align and format numbers
+                    {
+                        targets: [7, 8, 9],
+                        render: $.fn.dataTable.render.number(',', '.', 2) // Format numbers with commas and two decimals
+                    }
+                ]
+            });
         });
     </script>
 

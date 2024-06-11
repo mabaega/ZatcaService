@@ -16,6 +16,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="~/js/qrcode.js"></script>
     <style>
+        html {
+            font-size: 12px;
+        }
+
+        .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+            box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+        }
+
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+
+        body {
+            margin-bottom: 30px;
+        }
+
+
         .custom-card-width {
             min-width: 240px;
             margin: 0 auto;
@@ -38,6 +56,7 @@
 
         .container-md {
             padding-top: 50px;
+            padding-bottom: 50px;
         }
 
         textarea {
@@ -128,9 +147,8 @@
                                 </div>
                             </div>
 
-                            <hr />
                             <!-- Include hidden inputs for all other required fields -->
-                            <input type="hidden" name="Referrer" value="@Model.Referrer"
+                            <input type="hidden" name="Referrer" value="@Model.Referrer" />
                             <input type="hidden" name="ICV" value="@Model.ICV" />
                             <input type="hidden" name="PIH" value="@Model.PIH" />
                             <input type="hidden" name="RequestType" value="@Model.RequestType" />
@@ -255,27 +273,33 @@
             <div class="col-md-3">
                 <div class="card custom-card-width">
                     <div class="card-body text-center">
+                        
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="qr-code-card">
                                 <div id="qrCodeImage"></div>
                             </div>
                         </div>
+
                         <a id="downloadLink" href="data:application/octet-stream;base64,@Model.Base64SignedInvoice" class="btn btn-success mt-3" download="@Model.XmlFileName">Download Signed Invoice</a>
+                        
+                        <hr />
+
+                        <h2>Test Submit Form</h2>
+                        <form method="POST" action="@Model.Referrer">
+                            <input type="hidden" name="Edit" value='@Html.Raw(Model.EditData)' />
+                            <button type="submit" class="btn btn-warning">Submit JSON</button>
+                        </form>
+
+                        <hr />
+                        
+                        <a class="btn btn-success mt-3" asp-area="" asp-controller="Home" asp-action="Index">Go Home</a>
+
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    @*  =================================================== Stuck here === *@
-    <div class="container-md">
-        <h2>Test JSON Submit Form</h2>
-        <form method="POST" action="@Model.Referrer">
-            <input type="hidden" name="Edit" value='@Html.Raw(Model.EditData)' />
-            <button type="submit" class="btn btn-success">Submit JSON</button>
-        </form>
     </div>
-    @*  =================================================== Stuck here === *@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
@@ -330,26 +354,15 @@
             downloadLink.download = fileName;
         }
 
-        function formatCurrency(amount) {
-            return new Intl.NumberFormat('en-US', {
-                style: 'currency',
-                currency: model.CurrencyCode
-            }).format(amount);
-        }
-
         document.addEventListener('DOMContentLoaded', function () {
             formatTextareaJson('textareaManager');
             formatTextareaJson('textareaResponse');
             generateQRCode("@Model.Base64QrCode");
             generateDownloadLink("@Model.Base64SignedInvoice", "@Model.XmlFileName");
 
-            document.getElementById('currencyCode').value = model.CurrencyCode;
-            document.getElementById('amount').value = formatCurrency(model.Amount);
-            document.getElementById('taxAmount').value = formatCurrency(model.TaxAmount);
-            document.getElementById('totalAmount').value = formatCurrency(model.TotalAmount);
-    
         });
     </script>
 
 </body>
 </html>
+

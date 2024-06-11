@@ -1,10 +1,10 @@
 html {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 @media (min-width: 768px) {
   html {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
@@ -32,3 +32,36 @@ textarea {
 .right-align {
     text-align: right !important;
 }
+
+table.dataTable td {
+    white-space: nowrap;
+}
+
+table.dataTable {
+    width: 100%;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.password-input[readonly] {
+    -webkit-text-security: circle; 
+    -moz-text-security: circle;
+    text-security: circle;
+}
+
+.password-input:not([readonly]) {
+    -webkit-text-security: circle; 
+    -moz-text-security: circle;
+    text-security: circle;
+}
+

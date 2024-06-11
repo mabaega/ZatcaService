@@ -1,13 +1,13 @@
-﻿@model ZatcaService.Models.GatewaySetting
+﻿@model GatewaySetting
 
-<h1>Zatca Gateway Settings</h1>
+<h2>Zatca Gateway Settings</h2>
 <hr />
 
 <div class="container">
     <form id="editForm" asp-action="Edit" method="post">
         <div class="row">
             <!-- BusinessInfo Card -->
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <div class="card mb-3">
                     <div class="card-header">
                         <h4>Business Information</h4>
@@ -76,7 +76,7 @@
             </div>
 
             <!-- BusinessDataCustomField Card -->
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="card mb-3">
                     <div class="card-header">
                         <h4>Business Data Custom Fields</h4>
@@ -84,12 +84,11 @@
                     <div class="card-body">
                         <div class="mb-3">
                             <label asp-for="AccessToken" class="form-label"></label>
-                            <input asp-for="AccessToken" class="form-control" readonly />
+                            <input asp-for="AccessToken" class="form-control password-input" id="accessTokenField" readonly />
                         </div>
-                        <div class="mb-3">
-                            <label asp-for="BusinessNameGuid" class="form-label"></label>
-                            <input asp-for="BusinessNameGuid" class="form-control" readonly />
-                        </div>
+                        <hr />
+                        <input type="hidden" name="BusinessNameGuid" value="@Model.BusinessNameGuid" />
+
                         <div class="mb-3">
                             <label asp-for="BaseCurrencyGuid" class="form-label"></label>
                             <input asp-for="BaseCurrencyGuid" class="form-control" readonly />
@@ -126,13 +125,13 @@
         <!-- GatewaySetting Card -->
         <div class="card mb-3">
             <div class="card-header">
-                <h4>Zatca Api Endpoint Setting</h4>
+                <h4>Zatca Api Endpoint Settings</h4>
             </div>
             <div class="card-body">
 
                 <div class="mb-3">
                     <label asp-for="EcSecp256k1Privkeypem" class="form-label"></label>
-                    <textarea asp-for="EcSecp256k1Privkeypem" class="form-control" readonly style="min-height: 80px;"></textarea>
+                    <textarea asp-for="EcSecp256k1Privkeypem" class="form-control password-input" readonly style="min-height: 60px;"></textarea>
                 </div>
                 <hr />
                 <div class="mb-3">
@@ -141,11 +140,11 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="CCSIDBinaryToken" class="form-label"></label>
-                    <textarea asp-for="CCSIDBinaryToken" class="form-control" readonly style="min-height: 235px;"></textarea>
+                    <textarea asp-for="CCSIDBinaryToken" class="form-control" readonly style="min-height: 160px;"></textarea>
                 </div>
                 <div class="mb-3">
                     <label asp-for="CCSIDSecret" class="form-label"></label>
-                    <input asp-for="CCSIDSecret" class="form-control" readonly />
+                    <input asp-for="CCSIDSecret" class="form-control password-input" readonly />
                 </div>
                 <div class="mb-3">
                     <label asp-for="ComplianceCheckUrl" class="form-label"></label>
@@ -154,11 +153,11 @@
                 <hr />
                 <div class="mb-3">
                     <label asp-for="PCSIDBinaryToken" class="form-label"></label>
-                    <textarea asp-for="PCSIDBinaryToken" class="form-control" readonly style="min-height: 355px;"></textarea>
+                    <textarea asp-for="PCSIDBinaryToken" class="form-control" readonly style="min-height: 270px;"></textarea>
                 </div>
                 <div class="mb-3">
                     <label asp-for="PCSIDSecret" class="form-label"></label>
-                    <input asp-for="PCSIDSecret" class="form-control" readonly />
+                    <input asp-for="PCSIDSecret" class="form-control password-input" readonly />
                 </div>
                 <div class="mb-3">
                     <label asp-for="ReportingUrl" class="form-label"></label>
@@ -180,6 +179,7 @@
 </div>
 
 @section Scripts {
+
     <script>
         document.getElementById('editButton').addEventListener('click', function () {
             // Enable all form fields

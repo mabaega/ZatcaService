@@ -47,8 +47,8 @@ namespace ZatcaService.Models
         [Display(Name = "Api Access Token")]
         public string AccessToken { get; set; }
 
-        [Display(Name = "Business Name GUID")]
-        public string BusinessNameGuid { get; set; }
+        [Display(Name = "Business Database GUID")]
+        public string BusinessDatabaseGuid { get; set; }
 
         [Display(Name = "Base Currency GUID")]
         public string BaseCurrencyGuid { get; set; }

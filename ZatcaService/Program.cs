@@ -7,7 +7,36 @@ using ZatcaService.Helpers;
 using ZatcaService.Models;
 using ZatcaService.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateSlimBuilder(args);
+
+var portArg = args.FirstOrDefault(arg => arg.StartsWith("-p="));
+var dbPathArg = args.FirstOrDefault(arg => arg.StartsWith("-d="));
+
+int port = 4455; 
+string dbPath = Path.Combine(AppContext.BaseDirectory, "ZatcaInvoice.db");
+
+if (portArg != null && int.TryParse(portArg.Split('=')[1], out int parsedPort))
+{
+    port = parsedPort;
+}
+
+if (dbPathArg != null)
+{
+    dbPath = dbPathArg.Split('=')[1];
+}
+
+var dbDirectory = Path.GetDirectoryName(dbPath);
+if (!string.IsNullOrEmpty(dbDirectory) && !Directory.Exists(dbDirectory))
+{
+    Directory.CreateDirectory(dbDirectory);
+}
+
+dbPath = $"Data Source={dbPath}";
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(port);
+});
 
 builder.Host.UseWindowsService();
 builder.Services.AddWindowsService();
@@ -28,8 +57,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("SQLiteConnection")));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(dbPath));
 
 var app = builder.Build();
 

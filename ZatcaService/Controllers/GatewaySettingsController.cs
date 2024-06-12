@@ -27,18 +27,16 @@ namespace ZatcaService.Controllers
                 _dbContext.Update(gatewaySetting);
                 _dbContext.SaveChanges();
 
-                TempData["SuccessMessage"] = "Data saved successfully."; // Simpan pesan sukses
-                return RedirectToAction(nameof(Index)); // Mengarahkan kembali ke Index
+                TempData["SuccessMessage"] = "Data saved successfully.";
+                return RedirectToAction(nameof(Index)); 
             }
 
-            // Jika validasi gagal, kembalikan ke halaman edit dengan model yang sama
             return View(gatewaySetting);
         }
 
         [HttpPost]
         public IActionResult ResetToDefault()
         {
-            // Hapus setting yang ada (jika ada)
             var existingSetting = _dbContext.GatewaySettings.FirstOrDefault();
             if (existingSetting != null)
             {
@@ -46,15 +44,13 @@ namespace ZatcaService.Controllers
                 _dbContext.SaveChanges();
             }
 
-            // Dapatkan atau buat pengaturan default
             GatewaySetting defaultSettings = SettingInitializer.GetOrCreateGatewaySetting(_dbContext);
 
-            // Simpan pengaturan default ke basis data
-            //_dbContext.Update(defaultSettings);
-            //_dbContext.SaveChanges();
+            _dbContext.Update(defaultSettings);
+            _dbContext.SaveChanges();
 
-            TempData["SuccessMessage"] = "Settings reset to default successfully."; // Simpan pesan sukses
-            return RedirectToAction(nameof(Index)); // Mengarahkan kembali ke Index
+            TempData["SuccessMessage"] = "Settings reset to default successfully."; 
+            return RedirectToAction(nameof(Index));
         }
 
     }

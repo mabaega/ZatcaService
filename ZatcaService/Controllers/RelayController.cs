@@ -45,12 +45,33 @@ namespace ZatcaService.Controllers
                                  .ToDictionary(x => x.Key, x => x.Value)
                 };
 
+
+                if (!InvoiceHelper.ValidateCompanyID(relayData.HiddenFields, _gatewaySetting.BusinessDatabaseGuid, _gatewaySetting.CompanyID, out string validationMessage))
+                {
+                    _logger.LogWarning(validationMessage);
+
+                    string referrerLink = relayData.Referrer;
+                    string message = $@"
+                                The data received does not meet the required specifications.<br/>
+                                Please review the Gateway Settings in the Zatca Service application to ensure it matches your business data setup.<br/>
+                                <a href='{referrerLink}'>Go back to the previous page</a>";
+
+                    return new ContentResult
+                    {
+                        Content = message,
+                        ContentType = "text/html",
+                        StatusCode = (int)HttpStatusCode.BadRequest
+                    };
+                }
+
+                _logger.LogInformation($"Custom field value validated successfully.");
+
                 ApprovedInvoice approvedInvoice = _dbContext.ApprovedInvoices.FirstOrDefault(invoice => invoice.InvoiceUUID == relayData.Key);
 
                 if (approvedInvoice != null)
                 {
                     approvedInvoice.RequestType += " --- FROM INVOICE LOG ---";
-                    approvedInvoice.Referrer = relayData.Referrer; // Forgot this...
+                    approvedInvoice.Referrer = relayData.Referrer; 
                     return View("Index", approvedInvoice);
                 }
                 else
@@ -108,7 +129,19 @@ namespace ZatcaService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in ProcessFormData");
-                return StatusCode((int)HttpStatusCode.InternalServerError);
+
+                string referrerLink = formData.GetValueOrDefault("Referrer");
+                string message = $@"
+                        An error occurred while processing your request.<br/>
+                        Please review the Gateway Settings in the Zatca Service application to ensure it matches your business data setup.<br/>
+                        <a href='{referrerLink}'>Go back to the previous page</a>";
+
+                return new ContentResult
+                {
+                    Content = message,
+                    ContentType = "text/html",
+                    StatusCode = (int)HttpStatusCode.InternalServerError
+                };
             }
         }
 
@@ -226,7 +259,6 @@ namespace ZatcaService.Controllers
 
                 if (model.ClearanceStatus == "CLEARED")
                 {
-                    //model.Timestamp = apiResponse.Timestamp;
                     model.Timestamp = DateTime.Now;
 
                     _dbContext.ApprovedInvoices.Add(model);

@@ -105,7 +105,58 @@ namespace ZatcaService.Helpers
 
             throw new ArgumentException("Invalid referrer URL");
         }
+
+
+        public static bool ValidateCompanyID(
+                            Dictionary<string, string> hiddenFields,
+                            string businessDatabaseGuidKey,
+                            string companyID,
+                            out string message)
+        {
+            message = null;
+
+            if (!hiddenFields.ContainsKey(businessDatabaseGuidKey))
+            {
+                message = "Missing key '_gatewaysetting.BusinessDatabaseGuid' in HiddenFields.";
+                return false;
+            }
+
+            string jsonString = hiddenFields.GetValueOrDefault(businessDatabaseGuidKey);
+            if (jsonString == null)
+            {
+                message = "BusinessDatabaseGuid key is missing in HiddenFields.";
+                return false;
+            }
+
+            try
+            {
+                JObject jsonObject = JObject.Parse(jsonString);
+                string customFieldValue = jsonObject["CustomFields"]?["d96d97e8-c857-42c6-8360-443c06a13de9"]?.ToString();
+
+                if (string.IsNullOrEmpty(customFieldValue))
+                {
+                    message = "Expected custom field not found in Business Detail JSON.";
+                    return false;
+                }
+
+                if (!customFieldValue.Equals(companyID, StringComparison.OrdinalIgnoreCase))
+                {
+                    message = "The data received does not match the Company ID.";
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                message = "Error parsing BusinessDatabaseGuid JSON.";
+                return false;
+            }
+        }
+
     }
+
+    
 }
 
 

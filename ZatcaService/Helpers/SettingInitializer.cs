@@ -26,7 +26,7 @@ namespace ZatcaService.Helpers
                     RegistrationName = "شركة توريد التكنولوجيا بأقصى سرعة المحدودة | Maximum Speed Tech Supply LTD",
                     
                     AccessToken = "Cg5aYXRjYSBlSW52b2ljZRISCdLOzb499qRIEa2z2cVji+v8GhIJP/nFt1cZq0IRluVQdksmfSs=",
-                    BusinessNameGuid = "38cf4712-6e95-4ce1-b53a-bff03edad273",
+                    BusinessDatabaseGuid = "38cf4712-6e95-4ce1-b53a-bff03edad273",
                     BaseCurrencyGuid = "39dde4fc-7af8-44cc-8572-3b1ff4cfb918",
                     InvoiceSubTypeGuid = "e1050215-e02a-4de0-9d55-cf0dba27a0d6",
                     ItemTaxCategoryGuid = "6862773d-f847-486e-824b-0b42aaf0cf17",

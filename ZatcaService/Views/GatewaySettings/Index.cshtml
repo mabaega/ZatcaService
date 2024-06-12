@@ -87,12 +87,14 @@
                             <input asp-for="AccessToken" class="form-control password-input" id="accessTokenField" readonly />
                         </div>
                         <hr />
-                        <input type="hidden" name="BusinessNameGuid" value="@Model.BusinessNameGuid" />
 
                         <div class="mb-3">
-                            <label asp-for="BaseCurrencyGuid" class="form-label"></label>
-                            <input asp-for="BaseCurrencyGuid" class="form-control" readonly />
+                            <label asp-for="BusinessDatabaseGuid" class="form-label"></label>
+                            <input asp-for="BusinessDatabaseGuid" class="form-control" readonly />
                         </div>
+
+                        <input type="hidden" asp-for="BaseCurrencyGuid" class="form-control" />
+
                         <div class="mb-3">
                             <label asp-for="InvoiceSubTypeGuid" class="form-label"></label>
                             <input asp-for="InvoiceSubTypeGuid" class="form-control" readonly />

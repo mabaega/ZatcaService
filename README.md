@@ -147,7 +147,7 @@ Add the following information for each Customer and Supplier:
 "RegistrationName": "شركة نماذج فاتورة المحدودة | Fatoora Samples LTD"
 ```
 
-### Create Transaction Form Default Setup
+### Transaction Form Default Setup
 1. Checklist and Add Footer for QR Code.
 2. Checklist and Add Relay URL: http://localhost:4455/process-form.
 3. Add Other Settings as Needed.
@@ -157,6 +157,8 @@ Add the following information for each Customer and Supplier:
 2. Extract to Desired Folder.
 3. Run ZatcaService.exe and Open http://localhost:4455 in Browser.
 4. Populate Gateway Setting with Data from Previous Steps and Save Settings.
+
+ZatcaWebServices ready to serve Manager for Invoicing
 
 
 If you encounter any shortcomings or issues with the web API that need to be added or fixed, you can ask questions or provide feedback through the discussion section of this project. 

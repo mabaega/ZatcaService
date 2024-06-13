@@ -370,3 +370,4 @@ FodyWeavers.xsd
 /ZatcaService/ZatcaInvoice.db-shm
 /ZatcaService/ZatcaInvoice.db-wal
 /ZatcaService/Program - Copy.cs
+/Zatca.eInvoice/Models/UBLElement.cs

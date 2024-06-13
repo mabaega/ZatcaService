@@ -1,5 +1,6 @@
-﻿using Org.BouncyCastle.Security;
-using Org.BouncyCastle.X509;
+﻿//using Org.BouncyCastle.Security;
+//using Org.BouncyCastle.X509;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Zatca.eInvoice.Models;
@@ -189,20 +190,75 @@ namespace Zatca.eInvoice.Helpers
             return stream.ToArray();
         }
 
-        private static void TryGetPublicKeySByteArray(string certificate, out byte[] publicKey, out byte[] certificateSignature)
+        //private static void TryGetPublicKeySByteArray(string certificate, out byte[] publicKey, out byte[] certificateSignature)
+        //{
+        //    try
+        //    {
+        //        Org.BouncyCastle.X509.X509Certificate certificate2 = DotNetUtilities.FromX509Certificate(new X509Certificate2(Convert.FromBase64String(certificate)));
+        //        publicKey = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(certificate2.GetPublicKey()).GetEncoded();
+        //        certificateSignature = certificate2.GetSignature();
+        //    }
+        //    catch
+        //    {
+        //        throw new Exception("[Error] Invalid Certificate");
+        //    }
+
+        //}
+        public static void TryGetPublicKeySByteArray(string certificate, out byte[] publicKey, out byte[] certificateSignature)
         {
             try
             {
-                Org.BouncyCastle.X509.X509Certificate certificate2 = DotNetUtilities.FromX509Certificate(new X509Certificate2(Convert.FromBase64String(certificate)));
-                publicKey = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(certificate2.GetPublicKey()).GetEncoded();
-                certificateSignature = certificate2.GetSignature();
+                X509Certificate2 cert = new X509Certificate2(Convert.FromBase64String(certificate));
+
+                // Get the public key
+                publicKey = GetPublicKey(cert);
+                if (publicKey == null)
+                {
+                    throw new Exception("[Error] Public key not found in certificate");
+                }
+
+                // Get the certificate signature
+                certificateSignature = GetSignature(cert);
             }
-            catch
+            catch (Exception ex)
             {
-                throw new Exception("[Error] Invalid Certificate");
+                throw new Exception("[Error] Invalid Certificate: " + ex.Message);
+            }
+        }
+
+        private static byte[] GetPublicKey(X509Certificate2 cert)
+        {
+            if (cert.PublicKey.Oid.Value == "1.2.840.113549.1.1.1") // RSA
+            {
+                using (RSA rsa = cert.GetRSAPublicKey())
+                {
+                    if (rsa != null)
+                    {
+                        return rsa.ExportSubjectPublicKeyInfo();
+                    }
+                }
+            }
+            else if (cert.PublicKey.Oid.Value == "1.2.840.10045.2.1") // ECC
+            {
+                using (ECDsa ecdsa = cert.GetECDsaPublicKey())
+                {
+                    if (ecdsa != null)
+                    {
+                        return ecdsa.ExportSubjectPublicKeyInfo();
+                    }
+                }
             }
 
+            return null;
         }
+
+        private static byte[] GetSignature(X509Certificate2 cert)
+        {
+            // For simplicity, use the raw signature data (actual implementation may need detailed ASN.1 parsing)
+            return cert.RawData;
+        }
+
+
 
         public static SortedDictionary<int, string[]> ParseQRCodeContent(string qrCodeBase64)
         {

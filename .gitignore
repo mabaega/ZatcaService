@@ -371,3 +371,7 @@ FodyWeavers.xsd
 /ZatcaService/ZatcaInvoice.db-wal
 /ZatcaService/Program - Copy.cs
 /Zatca.eInvoice/Models/UBLElement.cs
+/Zatca.eInvoice/XmlSettingsProvider.cs
+/ZatcaService/Helpers/InvoiceHelper - Copy.cs
+/ZatcaService/Views/Shared/_Layout - Copy.cshtml
+/ZatcaService/Views/Shared/_Layout - Copy.cshtml.css

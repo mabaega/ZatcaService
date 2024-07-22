@@ -1,0 +1,205 @@
+﻿<div class="container">
+    <h3 class="mt-4">Integration Setup</h3>
+    
+    <hr />
+
+    <h5>Generate Business CSR</h5>
+    <ol>
+        Download Zatca SDK:
+        <ul>
+            Visit
+            <a href="https://example.com/sdk-download">Zatca SDK Download</a> and download version 238-R3.3.3.<br />
+            Extract the downloaded file to
+            <code>C:\</code>.
+        </ul>
+
+        Configuration:
+        <ul>
+            Copy
+            <code>C:\zatca-einvoicing-sdk-238-R3.3.3\Data\Input\csr-config-example-EN.properties</code> to
+            <code>C:\zatca-einvoicing-sdk-238-R3.3.3\Lib\.Net\csr.config</code>.<br />
+            Edit the copied file using Notepad and save it.
+        </ul>
+
+        Generate CSR:
+        <code>
+        <pre>
+    C:
+    cd \
+    cd C:\zatca-einvoicing-sdk-238-R3.3.3\Lib\.Net\Test
+    fatooranet.exe csr -csrConfig ..\csr.config -generatedCsr ..\cert.pem -privateKey ..\ec-secp256k1-priv-key.pem -nonprod true
+        </pre>
+        </code>
+        <p>Use <code>-nonprod true</code> for sandbox testing. Use <code>-sim true</code> for Simulation Server (not tested), and skip this option for production (not tested).</p>
+        <p>This command will generate two files:</p>
+        <ul>
+            <code>C:\zatca-einvoicing-sdk-238-R3.3.3\Lib\.Net\cert.pem</code><br />
+            <code>C:\zatca-einvoicing-sdk-238-R3.3.3\Lib\.Net\ec-secp256k1-priv-key.pem</code>
+        </ul>
+
+    </ol>
+
+    <h5 class="mt-4">CCSID and PCSID Generation</h5>
+    <p>In your browser, go to Zatca Integration Sandbox.</p>
+
+    <h6>Generate CCSID</h6>
+    <ol>
+        Select "Compliance CSID", click "POST", and then "Try it Out".<br />
+        Use the default valid token "123456" for sandbox testing.<br />
+        Copy the content of
+        <code>cert.pem</code> and paste it into the
+        <code>{ "csr": "csr file content" }</code> field.<br />
+        Click "Execute" to receive a response containing the binarySecurityToken and secret.
+    </ol>
+
+    <h6>Generate PCSID</h6>
+    <ol>
+        Select "Production CSID (Onboarding) API".<br />
+        Click "Authorize" and use the binarySecurityToken and secret from the CCSID generation step for authentication.<br />
+        Click "POST" and "Try it Out", using the CCSID requestID in the request body<br />
+        <code>{"compliance_request_id": "1234567890123"}</code>.<br />
+        Click "Execute" to receive a response with the PCSID details.
+    </ol>
+
+    <h5 class="mt-4">API Endpoints</h5>
+    <p>Use the following endpoints for sandbox testing:</p>
+    <ul>
+        Reporting:
+        <a href="https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal/invoices/reporting/single">https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal/invoices/reporting/single</a><br />
+        Clearance:
+        <a href="https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal/invoices/clearance/single">https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal/invoices/clearance/single</a><br />
+        Compliance Check:
+        <a href="https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal/compliance/invoices">https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal/compliance/invoices</a>
+    </ul>
+    
+    <hr />
+
+    <h4 class="mt-4">Manager Business Data Setup</h4>
+    <p>Generate New Business or Open Existing Business Data.</p>
+
+    <h5>Create Custom Fields</h5>
+    <ol>Navigate to Settings -&gt; Custom Fields -&gt; Text Custom Fields.</ol>
+
+    <b>PartyTaxInfo</b>
+    <ul>
+        Type: Paragraph text
+        <br />
+        Placement: Customer, Supplier
+    </ul>
+
+    <b>Item TaxCategory Info</b>
+    <ul>
+        Type: Dropdown list.
+        <br />
+        Placement: Inventory Item, Non Inventory Item, Inventory Kit
+        <br />
+        Dropdown list Options:
+        <br />
+        <code>
+        <pre>
+          S
+          E | VATEX-SA-29
+          E | VATEX-SA-29-7
+          E | VATEX-SA-30
+          Z | VATEX-SA-32
+          Z | VATEX-SA-33
+          Z | VATEX-SA-34-1
+          Z | VATEX-SA-34-2
+          Z | VATEX-SA-34-3
+          Z | VATEX-SA-34-4
+          Z | VATEX-SA-34-5
+          Z | VATEX-SA-35
+          Z | VATEX-SA-36
+          Z | VATEX-SA-EDU
+          Z | VATEX-SA-HEA
+          Z | VATEX-SA-MLTRY
+          | VATEX-SA-OOS
+        </pre></code>
+    </ul>
+
+    <b>Create Similiar Custom Fields for Transactions</b>
+    <ul>
+        Invoice Sub Type
+        <br />
+        Payment Means
+        <br />
+        Instruction Note (Skip Sales Invoice)
+        <br />
+        QR Code (Type: Paragraph text)
+    </ul>
+    <p>Edit Custom Fields to get GUIDs.</p>
+
+    <h5 class="mt-4">Footer Script for Transaction Documents</h5>
+    <ol>Add the following script to the footer to generate and insert a QR code into the printed document:</ol>
+    <code><pre>
+    &lt;script&gt;
+        document.addEventListener('DOMContentLoaded', () => {
+          var qrCodeContent = '%%QR Code%%';
+
+          if (qrCodeContent != '-') {
+            var mainTable = document.querySelector('#printable-content &gt; table');
+            if (mainTable) {
+              var newRow = mainTable.insertRow();
+              var newCell = newRow.insertCell();
+              newCell.colSpan = 99;
+              newCell.innerHTML += '&lt;div id="signedQrCode" style="padding: 20px"&gt;&lt;/div&gt;';
+            }
+
+            new QRCode(document.getElementById("signedQrCode"), {
+              text: qrCodeContent,
+              width: 160,
+              height: 160,
+              colorDark: "#000000",
+              colorLight: "#fafafa",
+              correctLevel: QRCode.CorrectLevel.L
+            });
+
+            var qrcodeDiv = document.getElementById('qrcode');
+            if (qrcodeDiv) {
+              qrcodeDiv.remove();
+            }
+          }
+        });
+    &lt;/script&gt;
+    </pre>
+    </code>
+
+    <h5 class="mt-4">Create Transaction Form Default Setup</h5>
+    <ol>Checklist and Add Footer for QR Code.<br />
+    Checklist and Add Relay URL: <a href="http://localhost:4455/process-form">http://localhost:4455/process-form</a>.<br />
+    Add Other Settings as needed.</ol>
+
+    <h5 class="mt-4">PartyTaxInfo for All Customer and Supplier</h5>
+    <ol>Add the following information for each Customer and Supplier:</ol>
+    <code><pre>
+    "StreetName": "صلاح الدين | Salah Al-DinX",
+    "BuildingNumber": "1111",
+    "CitySubdivisionName": "المروج | Al-Murooj",
+    "CityName": "الرياض | Riyadh",
+    "PostalZone": "12222",
+    "CountryIdentificationCode": "SA",
+    "TaxSchemeCompanyID": "399999999800003",
+    "TaxSchemeID": "VAT",
+    "RegistrationName": "شركة نماذج فاتورة المحدودة | Fatoora Samples LTD"
+    </pre></code>
+
+    <hr/>
+
+    <h4 class="mt-4">ZatcaWebServices Application Setup</h4>
+    <ol>
+        Download Latest Release from GitHub.<br />
+        Extract to Desired Folder.<br />
+        Run
+        <code>ZatcaService.exe</code> and <br />Open <a href="http://localhost:4455">http://localhost:4455</a> in Browser.
+    </ol>
+
+    <h5 class="mt-4">Populate Gateway Setting</h5>
+    <ol>Populate Gateway Setting with Data from Previous Steps and Save Settings.</ol>
+
+    <hr />
+    
+    <h4 class="mt-4">Feedback and Support</h4>
+    <ol>If you encounter any shortcomings or issues with the web API that need to be addressed, please provide feedback through the discussion section of this project. <br />
+        Your input is highly valued to improve the quality and functionality of this integration.</ol>
+
+</div>

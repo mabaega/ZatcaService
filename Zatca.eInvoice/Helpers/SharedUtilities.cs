@@ -1,5 +1,10 @@
-﻿using System.Reflection;
+﻿using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Security;
+using System.Numerics;
+using System.Reflection;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Xml;
@@ -128,26 +133,32 @@ namespace Zatca.eInvoice.Helpers
             return SHA256.HashData(Encoding.UTF8.GetBytes(rawData));
         }
 
-        //internal static string GetDigitalSignature(string xmlHashing, string privateKeyContent)
-        //{
-        //    byte[] buffer;
-        //    sbyte[] numArray = (from x in Convert.FromBase64String(xmlHashing) select (sbyte)x).ToArray();
-        //    privateKeyContent = privateKeyContent.Replace("\n", "").Replace("\t", "");
-        //    if (!privateKeyContent.Contains("-----BEGIN EC PRIVATE KEY-----") && !privateKeyContent.Contains("-----END EC PRIVATE KEY-----"))
-        //    {
-        //        privateKeyContent = "-----BEGIN EC PRIVATE KEY-----\n" + privateKeyContent + "\n-----END EC PRIVATE KEY-----\n";
-        //    }
-        //    using (TextReader reader = new StringReader(privateKeyContent))
-        //    {
-        //        AsymmetricKeyParameter @private = ((AsymmetricCipherKeyPair)new PemReader(reader).ReadObject()).Private;
-        //        ISigner signer = SignerUtilities.GetSigner("SHA-256withECDSA");
-        //        signer.Init(true, @private);
-        //        signer.BlockUpdate((byte[])(Array)numArray, 0, numArray.Length);
-        //        buffer = signer.GenerateSignature();
-        //    }
-        //    return Convert.ToBase64String(buffer);
-        //}
+        internal static string GetDigitalSignature(string xmlHashing, string privateKeyContent)
+        {
+            byte[] buffer;
+            sbyte[] numArray = (from x in Convert.FromBase64String(xmlHashing) select (sbyte)x).ToArray();
+            privateKeyContent = privateKeyContent.Replace("\n", "").Replace("\t", "");
+            if (!privateKeyContent.Contains("-----BEGIN EC PRIVATE KEY-----") && !privateKeyContent.Contains("-----END EC PRIVATE KEY-----"))
+            {
+                privateKeyContent = "-----BEGIN EC PRIVATE KEY-----\n" + privateKeyContent + "\n-----END EC PRIVATE KEY-----\n";
+            }
+            using (TextReader reader = new StringReader(privateKeyContent))
+            {
+                AsymmetricKeyParameter @private = ((AsymmetricCipherKeyPair)new PemReader(reader).ReadObject()).Private;
+                ISigner signer = SignerUtilities.GetSigner("SHA-256withECDSA");
+                signer.Init(true, @private);
+                signer.BlockUpdate((byte[])(Array)numArray, 0, numArray.Length);
+                buffer = signer.GenerateSignature();
+            }
+            return Convert.ToBase64String(buffer);
+        }
 
+        internal static string GetSerialNumberForCertificateObject(X509Certificate2 x509Certificate2)
+        {
+            sbyte[] numArray = (from x in x509Certificate2.GetSerialNumber() select (sbyte)x).ToArray();
+            BigInteger integer = new((byte[])(Array)numArray);
+            return integer.ToString();
+        }
 
         internal static string HashSha256AsString(string rawData)
         {
@@ -179,6 +190,31 @@ namespace Zatca.eInvoice.Helpers
             }
 
             return Encoding.UTF8.GetString(memoryStream.ToArray());
+        }
+
+        internal static string GetSignedPropertiesHash(string signingTime, string digestValue, string x509IssuerName, string x509SerialNumber)
+        {
+            string xmlString = $@"<xades:SignedProperties xmlns:xades=""http://uri.etsi.org/01903/v1.3.2#"" Id=""xadesSignedProperties"">
+                                    <xades:SignedSignatureProperties>
+                                        <xades:SigningTime>{signingTime}</xades:SigningTime>
+                                        <xades:SigningCertificate>
+                                            <xades:Cert>
+                                                <xades:CertDigest>
+                                                    <ds:DigestMethod xmlns:ds=""http://www.w3.org/2000/09/xmldsig#"" Algorithm=""http://www.w3.org/2001/04/xmlenc#sha256""/>
+                                                    <ds:DigestValue xmlns:ds=""http://www.w3.org/2000/09/xmldsig#"">{digestValue}</ds:DigestValue>
+                                                </xades:CertDigest>
+                                                <xades:IssuerSerial>
+                                                    <ds:X509IssuerName xmlns:ds=""http://www.w3.org/2000/09/xmldsig#"">{x509IssuerName}</ds:X509IssuerName>
+                                                    <ds:X509SerialNumber xmlns:ds=""http://www.w3.org/2000/09/xmldsig#"">{x509SerialNumber}</ds:X509SerialNumber>
+                                                </xades:IssuerSerial>
+                                            </xades:Cert>
+                                        </xades:SigningCertificate>
+                                    </xades:SignedSignatureProperties>
+                                </xades:SignedProperties>".Replace("\r\n", "\n");  // Normalize line endings to LF only
+
+            byte[] hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(xmlString.Trim()));
+            string hashHex = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(hashHex));
         }
 
     }

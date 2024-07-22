@@ -32,7 +32,7 @@ namespace ZatcaService.Controllers
         {
             try
             {
-                _logger.LogInformation("Received form data: {FormData}", JsonConvert.SerializeObject(formData));
+                //_logger.LogInformation("Received form data: {FormData}", JsonConvert.SerializeObject(formData));
 
                 var relayData = new RelayData
                 {
@@ -48,7 +48,7 @@ namespace ZatcaService.Controllers
 
                 if (!InvoiceHelper.ValidateCompanyID(relayData.HiddenFields, _gatewaySetting.BusinessDatabaseGuid, _gatewaySetting.CompanyID, out string validationMessage))
                 {
-                    _logger.LogWarning(validationMessage);
+                   // _logger.LogWarning(validationMessage);
 
                     string referrerLink = relayData.Referrer;
                     string message = $@"
@@ -64,7 +64,7 @@ namespace ZatcaService.Controllers
                     };
                 }
 
-                _logger.LogInformation($"Custom field value validated successfully.");
+                //_logger.LogInformation($"Custom field value validated successfully.");
 
                 ApprovedInvoice approvedInvoice = _dbContext.ApprovedInvoices.FirstOrDefault(invoice => invoice.InvoiceUUID == relayData.Key);
 
@@ -349,6 +349,9 @@ namespace ZatcaService.Controllers
             {
                 var apiUrl = InvoiceHelper.ConstructApiUrl(model.Referrer, model.InvoiceUUID);
 
+               // _logger.LogInformation($"Update Invoice API URL: {apiUrl}");
+               // _logger.LogInformation($"Update Invoice API URL: {_gatewaySetting.AccessToken}");
+
                 using (var client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Add("X-API-KEY", _gatewaySetting.AccessToken);
@@ -358,8 +361,9 @@ namespace ZatcaService.Controllers
                     var content = new StringContent(payload, Encoding.UTF8, "application/json");
 
                     var response = await client.PutAsync(apiUrl, content);
-
+                    
                     ServerResult serverResult = new();
+
                     if (response.IsSuccessStatusCode)
                     {
                         serverResult.Message = "Manager invoice successfully updated. Please return to the manager to view the results.";

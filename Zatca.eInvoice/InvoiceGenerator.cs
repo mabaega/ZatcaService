@@ -55,15 +55,14 @@ namespace Zatca.eInvoice
                 string SignatureTimestamp = DateTime.Now.ToString("yyyy-MM-dd'T'HH:mm:ss");
                 string PublicKeyHashing = Convert.ToBase64String(Encoding.UTF8.GetBytes(SharedUtilities.HashSha256AsString(X509CertificateContent)));
                 string IssuerName = parsedCertificate.IssuerName.Name;
-                string SerialNumber = SignatureHelper.GetSerialNumberForCertificateObject(parsedCertificate);
-                string SignedPropertiesHash = SignatureHelper.GetSignedPropertiesHash(SignatureTimestamp, PublicKeyHashing, IssuerName, SerialNumber);
+                string SerialNumber = SharedUtilities.GetSerialNumberForCertificateObject(parsedCertificate);
+                string SignedPropertiesHash = SharedUtilities.GetSignedPropertiesHash(SignatureTimestamp, PublicKeyHashing, IssuerName, SerialNumber);
 
                 string CleanInvoice = GetCleanInvoiceXML(true);
 
                 string InvoiceHash = SharedUtilities.GetBase64InvoiceHash(CleanInvoice);
 
-                //string SignatureValue = SharedUtilities.GetDigitalSignature(InvoiceHash, EcSecp256k1Privkeypem);
-                string SignatureValue = SignatureHelper.GetDigitalSignature(InvoiceHash, EcSecp256k1Privkeypem);
+                string SignatureValue = SharedUtilities.GetDigitalSignature(InvoiceHash, EcSecp256k1Privkeypem);
 
                 SignedUBL signedUBL = new(InvoiceHash,
                     SignedPropertiesHash,
@@ -74,7 +73,7 @@ namespace Zatca.eInvoice
                     IssuerName,
                     SerialNumber);
 
-                base64QrCode = QRCodeHelper.GenerateQRCode(InvoiceObject, signedUBL);
+                base64QrCode = QrCodeGenerator.GenerateQRCode(InvoiceObject, signedUBL);
 
 
                 string stringXMLQrCode = SharedUtilities.ReadResource("ZatcaDataQr.xml").Replace("TLV_QRCODE_STRING", base64QrCode);

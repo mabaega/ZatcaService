@@ -48,6 +48,14 @@ namespace Zatca.eInvoice.Helpers
     {
         CRN, MOM, MLS, Number700, SAG, OTH
     }
-    
+
+    public enum EnvironmentType
+    {
+        NonProduction,
+        Simulation,
+        Production
+    }
+
+
 }
 

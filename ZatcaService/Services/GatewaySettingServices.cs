@@ -22,5 +22,4 @@ namespace ZatcaService.Services
             return SettingInitializer.GetOrCreateGatewaySetting(_dbContext);
         }
     }
-
 }

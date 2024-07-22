@@ -1,51 +1,59 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>disable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<SelfContained>true</SelfContained>
+		<PublishSingleFile>true</PublishSingleFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Repositories\**" />
-    <Content Remove="Repositories\**" />
-    <EmbeddedResource Remove="Repositories\**" />
-    <None Remove="Repositories\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Repositories\**" />
+		<Content Remove="Repositories\**" />
+		<EmbeddedResource Remove="Repositories\**" />
+		<None Remove="Repositories\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Program - Copy.cs" />
-    <Compile Remove="Services\IRelayServices.cs" />
-    <Compile Remove="Services\IZatcaService.cs" />
-    <Compile Remove="Services\RelayService.cs" />
-    <Compile Remove="Services\ZatcaService.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Helpers\InvoiceHelper - Copy.cs" />
+		<Compile Remove="Helpers\InvoiceHelper__.cs" />
+		<Compile Remove="Program - Copy.cs" />
+		<Compile Remove="Services\IRelayServices.cs" />
+		<Compile Remove="Services\IZatcaService.cs" />
+		<Compile Remove="Services\RelayService.cs" />
+		<Compile Remove="Services\ZatcaService.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Remove="Views\GatewaySettings\xIndex.cshtml" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Remove="Views\GatewaySettings\xIndex.cshtml" />
+		<Content Remove="Views\Shared\_Layout - Copy.cshtml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Template.txt" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="Template.txt" />
+		<None Remove="Views\Shared\_Layout - Copy.cshtml.css" />
+	</ItemGroup>
 
-  <ItemGroup>
-	<PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="8.0.6" />
-	<PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
-	<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
-	<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="8.0.6" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Zatca.eInvoice\Zatca.eInvoice.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Zatca.eInvoice\Zatca.eInvoice.csproj" />
+	</ItemGroup>
 
 </Project>

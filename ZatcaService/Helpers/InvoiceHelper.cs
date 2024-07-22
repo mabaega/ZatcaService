@@ -86,6 +86,11 @@ namespace ZatcaService.Helpers
             var uri = new Uri(referrer);
             var baseUrl = $"{uri.Scheme}://{uri.Host}";
 
+            if (uri.Port != 80 && uri.Port != 443) 
+            {
+                baseUrl += $":{uri.Port}";
+            }
+
             if (referrer.Contains("purchase-invoice-view"))
             {
                 return $"{baseUrl}/api2/purchase-invoice-form/{invoiceUUID}";
@@ -147,7 +152,7 @@ namespace ZatcaService.Helpers
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 message = "Error parsing BusinessDatabaseGuid JSON.";
                 return false;

@@ -13,9 +13,9 @@ namespace ZatcaService.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index() // Ubah tindakan menjadi "Index"
+        public async Task<IActionResult> Index() 
         {
-            var invoices = await _context.ApprovedInvoices.ToListAsync();
+            var invoices = await _context.ApprovedInvoices.OrderByDescending(e => e.Timestamp).ToListAsync();
             return View(invoices);
         }
     }

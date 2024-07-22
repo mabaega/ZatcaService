@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Text.Json.Serialization;
 using ZatcaService.Helpers;
@@ -12,7 +13,7 @@ var builder = WebApplication.CreateSlimBuilder(args);
 var portArg = args.FirstOrDefault(arg => arg.StartsWith("-p="));
 var dbPathArg = args.FirstOrDefault(arg => arg.StartsWith("-d="));
 
-int port = 4455; 
+int port = 4455;
 string dbPath = Path.Combine(AppContext.BaseDirectory, "ZatcaInvoice.db");
 
 if (portArg != null && int.TryParse(portArg.Split('=')[1], out int parsedPort))
@@ -36,6 +37,10 @@ dbPath = $"Data Source={dbPath}";
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(port);
+    //options.ListenAnyIP(5001, listenOptions =>
+    //{
+    //    listenOptions.UseHttps(); 
+    //});
 });
 
 builder.Host.UseWindowsService();
@@ -44,8 +49,7 @@ builder.Services.AddWindowsService();
 builder.Services.AddScoped<IGatewaySettingService, GatewaySettingService>();
 
 builder.Services.Configure<JsonOptions>(options =>
-         options.SerializerOptions.DefaultIgnoreCondition
-   = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull);
+    options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault | JsonIgnoreCondition.WhenWritingNull);
 
 builder.Services.AddCors(options =>
 {
@@ -58,7 +62,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite(dbPath));
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -90,7 +93,7 @@ var localizationOptions = new RequestLocalizationOptions
 
 app.UseRequestLocalization(localizationOptions);
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

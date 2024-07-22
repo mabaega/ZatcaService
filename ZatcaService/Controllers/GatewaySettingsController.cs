@@ -15,7 +15,7 @@ namespace ZatcaService.Controllers
 
         public IActionResult Index()
         {
-            GatewaySetting gatewaySetting = _dbContext.GatewaySettings.FirstOrDefault();
+            GatewaySetting gatewaySetting = _dbContext.GatewaySettings.OrderBy(e=>e.RowId).FirstOrDefault();
             return View(gatewaySetting);
         }
 
@@ -37,7 +37,7 @@ namespace ZatcaService.Controllers
         [HttpPost]
         public IActionResult ResetToDefault()
         {
-            var existingSetting = _dbContext.GatewaySettings.FirstOrDefault();
+            var existingSetting = _dbContext.GatewaySettings.OrderBy(e => e.RowId).FirstOrDefault();
             if (existingSetting != null)
             {
                 _dbContext.GatewaySettings.Remove(existingSetting);

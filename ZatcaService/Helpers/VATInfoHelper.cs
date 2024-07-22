@@ -1,5 +1,4 @@
-﻿using static ZatcaService.Helpers.VATInfoHelper;
-
+﻿
 namespace ZatcaService.Helpers
 {
     public class VATInfoHelper

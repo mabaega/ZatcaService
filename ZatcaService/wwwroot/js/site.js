@@ -1,4 +1,16 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$(() => {
+    var currentPath = window.location.pathname.toLowerCase();
 
-// Write your JavaScript code.
+    $('.navbar-nav .nav-link').each(function () {
+        var linkPath = $(this).attr('href');
+
+        if (linkPath) { // Check if linkPath is defined and not null
+            linkPath = linkPath.toLowerCase(); // Convert to lower case
+            if (currentPath === linkPath) {
+                $(this).addClass('active');
+            } else {
+                $(this).removeClass('active');
+            }
+        }
+    });
+});

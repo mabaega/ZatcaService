@@ -50,7 +50,8 @@ namespace Zatca.eInvoice.Models
         public Amount(string currencyID, double value)
         {
             CurrencyID = currencyID;
-            Value = value.ToString("G17", CultureInfo.InvariantCulture); // G17 memastikan bahwa semua digit desimal disimpan
+            Value = value.ToString("F2", CultureInfo.InvariantCulture);
+            //Value = value.ToString("G17", CultureInfo.InvariantCulture); // G17 memastikan bahwa semua digit desimal disimpan
         }
 
         public Amount() { }

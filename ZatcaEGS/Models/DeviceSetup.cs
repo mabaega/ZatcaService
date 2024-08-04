@@ -201,6 +201,8 @@ namespace ZatcaEGS.Models
         [Display(Name = "PCSID Secret")]
         public string PCSIDSecret { get; set; }
 
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode = true)]
         [Display(Name = "Registered Date")]
         public DateTime RegisteredDate { get; set; }
 

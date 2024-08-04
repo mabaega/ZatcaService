@@ -406,7 +406,7 @@
                             <div class="col-md-3 mb-3">
                                 <div class="form-group">
                                     <label class="form-label text-center" asp-for="RegisteredDate">Registered Date</label>
-                                    <input asp-for="RegisteredDate" class="form-control form-control-sm" readonly />
+                                    <input asp-for="RegisteredDate" type="datetime-local" class="form-control form-control-sm" readonly />
                                 </div>
                             </div>
 
@@ -589,7 +589,9 @@
                         $("#CCSIDComplianceRequestId").val(response.ccsidComplianceRequestId);
                         $("#PCSIDBinaryToken").val(response.pcsidBinaryToken);
                         $("#PCSIDSecret").val(response.pcsidSecret);
-                        $("#RegisteredDate").val(response.registeredDate);
+
+                        var formattedDate = response.registeredDate.slice(0, 16);
+                        $("#RegisteredDate").val(formattedDate);
 
                         alert('Device Registered Successfully!');
 

@@ -7,8 +7,9 @@ using Newtonsoft.Json;
 using Zatca.eInvoice;
 using Zatca.eInvoice.Helpers;
 using Zatca.eInvoice.Models;
+using Zatca.eInvoice.Test;
 
-//This code is used as a demonstration of how to use the Zatca.e Invoice Library.
+//This code is used as a demonstration of how to use the Zatca.eInvoice Library.
 public class ZatcaService
 {
     private const string ComplianceCSIDUrl = "https://gw-fatoora.zatca.gov.sa/e-invoicing/developer-portal/compliance";

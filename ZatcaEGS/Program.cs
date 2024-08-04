@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using ZatcaEGS.Models;
 
 //dotnet build --self-contained -p:GenerateRuntimeConfigurationFiles=false -p:GenerateDependencyFile=false
+//dotnet build --self-contained -p:GenerateRuntimeConfigurationFiles=false -p:GenerateDependencyFile=false
 
 var builder = WebApplication.CreateSlimBuilder(args);
 

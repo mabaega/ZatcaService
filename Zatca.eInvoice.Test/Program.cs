@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using Zatca.eInvoice;
 using Zatca.eInvoice.Helpers;
 using Zatca.eInvoice.Models;
-using Zatca.eInvoice.Test;
 
 //This code is used as a demonstration of how to use the Zatca.e Invoice Library.
 public class ZatcaService
@@ -539,7 +538,7 @@ class Program
             {
                 // Step 1: Onboarding
                 var result = await zatcaService.OnboardingDevice();
-
+                
                 Console.WriteLine("Onboarding Result: \n\n");
                 Console.WriteLine($"Generated CSR:\n{result.GeneratedCsr} \n");
                 Console.WriteLine($"Private Key:\n{result.PrivateKey} \n");
